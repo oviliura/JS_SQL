@@ -26,12 +26,12 @@ SELECT COUNT(*) FROM ApplicationData.CheckListTemplateItem WHERE IsActive = 1;
 
 /*EXERCISE1 Additional1*/
 DECLARE @yourID INT =24;
-SELECT COUNT(*) FROM ApplicationData.CheckListTemplateItem WHERE ApplicationData.CheckListTemplateItem.isActive = 1 
-AND ApplicationData.CheckListTemplateItem.CheckListTemplateHeaderId = @yourID;
+SELECT COUNT(*) FROM ApplicationData.CheckListTemplateItem Item WHERE Item.isActive = 1 
+AND Item.CheckListTemplateHeaderId = @yourID;
 
 
 /*EXERCISE1 Additional2*/
 DECLARE @yourHeaderID INT =24;
-SELECT ApplicationData.CheckListTemplateHeader.IsCurrent FROM ApplicationData.CheckListTemplateHeader
-WHERE ApplicationData.CheckListTemplateHeader.CheckListTemplateHeaderId = @yourHeaderID
+SELECT Header.IsCurrent FROM ApplicationData.CheckListTemplateHeader Header
+WHERE Header.CheckListTemplateHeaderId = @yourHeaderID
 

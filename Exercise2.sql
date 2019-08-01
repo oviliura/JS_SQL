@@ -27,28 +27,31 @@ Use Rate to calculate Issue Tasks Estimated and Actual Costs by formula (costs =
 /*EXERCISE2 PART1*/
 DECLARE @yourIssueID INT =492;
 
-SELECT [ApplicationData].[Issue].[Reference], [ApplicationData].[Issue].[Description] AS IssueDescription,
-[ApplicationData].[IssueStatus].[Description] AS IssueStatusDescription, [ApplicationData].[IssueCause].[Description] AS IssueCauseDescription,
-CONCAT(CONVERT(varchar,[ApplicationData].[Issue].[CreatedAt], 103), ' ' , CONVERT(varchar(5),[ApplicationData].[Issue].[CreatedAt], 24))AS [CreatedAt],
-[ApplicationData].[Issue].[DueDate], --FORMAT IN JS Editor IF NULL
-DATEDIFF (DAY, [ApplicationData].[Issue].[DueDate], CONVERT(datetimeoffset, GETDATE())) AS DIFF --BETTER IN JSEditor(IF NULL)
-FROM [ApplicationData].[Issue] JOIN [ApplicationData].[IssueStatus]
-ON [ApplicationData].[Issue].[IssueStatusId]=[ApplicationData].[IssueStatus].[IssueStatusId]
-JOIN [ApplicationData].[IssueCause] 
-ON [ApplicationData].[Issue].[IssueCauseId]=[ApplicationData].[IssueCause].[IssueCauseId]
-WHERE [ApplicationData].[Issue].[IssueInternalId] = @yourIssueID
+SELECT Issue.[Reference], Issue.[Description] AS IssueDescription,
+IssueStatus.[Description] AS IssueStatusDescription,
+IssueCause.[Description] AS IssueCauseDescription,
+CONCAT(CONVERT(varchar,Issue.[CreatedAt], 103), ' ' , CONVERT(varchar(5),Issue.[CreatedAt], 24)) AS [CreatedAt],
+Issue.[DueDate], --FORMAT IN JS Editor IF NULL
+DATEDIFF (DAY, Issue.[DueDate], CONVERT(datetimeoffset, GETDATE())) AS DIFF --BETTER IN JSEditor(IF NULL)
+FROM [ApplicationData].[Issue] Issue JOIN [ApplicationData].[IssueStatus] IssueStatus
+ON Issue.[IssueStatusId]=IssueStatus.[IssueStatusId]
+JOIN [ApplicationData].[IssueCause] IssueCause
+ON Issue.[IssueCauseId]=IssueCause.[IssueCauseId]
+WHERE Issue.[IssueInternalId] = @yourIssueID
 
 
 /*EXERCISE2 PART2*/
 DECLARE @yourIssueInternalID INT =492;
 
-SELECT [ApplicationData].[IssueTask].[Reference], [ApplicationData].[IssueTaskWorkStatus].[Code],
-[ApplicationData].[IssueTask].[EstimateHours], [ApplicationData].[IssueTask].[ActualHours],
+SELECT IssueTask.[Reference],
+WorkStatus.[Code],
+IssueTask.[EstimateHours],
+IssueTask.[ActualHours],
 CONCAT(CONVERT(varchar,(ISNULL([IssueTask].[ActualHours]-[IssueTask].[EstimateHours], 0))),'%') AS DIFF
-FROM [ApplicationData].[IssueTask]
-JOIN [ApplicationData].[IssueTaskWorkStatus]
-ON [ApplicationData].[IssueTask].[IssueTaskWorkStatusId]=[ApplicationData].[IssueTaskWorkStatus].[IssueTaskWorkStatusId]
+FROM [ApplicationData].[IssueTask] IssueTask
+JOIN [ApplicationData].[IssueTaskWorkStatus] WorkStatus
+ON IssueTask.[IssueTaskWorkStatusId]=WorkStatus.[IssueTaskWorkStatusId]
 JOIN [ApplicationData].[Issue]
-ON [ApplicationData].[Issue].[IssueGUID]=[ApplicationData].[IssueTask].[IssueGUID]
+ON [ApplicationData].[Issue].[IssueGUID]=IssueTask.[IssueGUID]
 WHERE [ApplicationData].[Issue].[IssueInternalId]=@yourIssueInternalID
 
